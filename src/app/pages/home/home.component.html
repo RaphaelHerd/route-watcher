@@ -1,0 +1,130 @@
+<div class="wrapper wrapper-content">
+  <div class="row">
+      <div class="col-lg-3">
+          <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                  <h5>Avarage Duration</h5>
+              </div>
+              <div class="ibox-content">
+                  <h1 class="no-margins">{{ averageDuration }} min</h1>
+                  <div class="stat-percent font-bold text-success">{{ averageDistance }} km <i class="fa fa-bolt"></i></div>
+                  <small>Average Distance</small>
+                  <hr>
+                  <p>From: {{ getFromMonth() }}/{{ getFromDay() }}/{{ getFromYear() }} </p>
+                  <p>To: {{ getToMonth() }}/{{ getToDay() }}/{{ getToYear()}}</p>
+                  <ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="1" [dayTemplate]="t" outsideDays="hidden">
+                  </ngb-datepicker>
+                  <ng-template #t let-date let-focused="focused">
+                    <span class="custom-day"
+                          [class.focused]="focused"
+                          [class.range]="isRange(date)"
+                          [class.faded]="isHovered(date) || isInside(date)"
+                          (mouseenter)="hoveredDate = date"
+                          (mouseleave)="hoveredDate = null">
+                      {{ date.day }}
+                    </span>
+                  </ng-template>
+              </div>
+          </div>
+      </div>
+      <div class="col-lg-3">
+          <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                  <span *ngIf="todaysRoute.traffic == 'moderate'" class="label label-warning pull-right">Moderate</span>
+                  <span *ngIf="todaysRoute.traffic == 'high'" class="label label-danger pull-right">High</span>
+                  <span *ngIf="todaysRoute.traffic == 'low'" class="label label-primary pull-right">Low</span>
+
+                  <h5>Duration Today</h5>
+              </div>
+              <div class="ibox-content">
+                  <h1 class="no-margins">{{ todaysRoute.duration }} km</h1>
+                  <div class="stat-percent font-bold text-info">{{ todaysRoute.distance }} min<i class="fa fa-level-up"></i></div>
+                  <small>Distance</small>
+              </div>
+          </div>
+      </div>
+
+  </div>
+  <div class="row">
+
+      <div class="col-lg-18">
+          <div class="row">
+              <div class="col-lg-12">
+                  <div class="ibox float-e-margins">
+                      <div class="ibox-title">
+                          <h5>Route History</h5>
+                          <div class="ibox-tools">
+                              <a class="collapse-link">
+                                  <i class="fa fa-chevron-up"></i>
+                              </a>
+                              <a class="close-link">
+                                  <i class="fa fa-times"></i>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="ibox-content">
+
+                          <div class="row">
+                              <div class="col-lg-16">
+                                  <table class="table table-hover margin bottom">
+                                      <thead>
+                                      <tr>
+                                          <th style="width: 1%" class="text-center">Nr. </th>
+                                          <th class="text-center" sortable="date" (click)="sortTable($event, 'date')">Date</th>
+                                          <th class="text-center" sortable="distance" (click)="sortTable($event, 'distance')" >Route Length (km)</th>
+                                          <th class="text-center" sortable="duration" (click)="sortTable($event, 'duration')" >Duration in min</th>
+                                          <th class="text-center">Traffic</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                          <tr *ngFor="let item of tableData | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber};let index = index">
+                                              <td class="text-center">{{item.id}}</td>
+                                              <td class="text-center small">{{item.date | date:'dd.MM.yyyy' }}</td>
+                                              <td class="text-center"><span class="label label-primary">{{item.distance}}</span></td>
+                                              <td class="text-center">{{item.duration}}</td>
+                                              <td *ngIf="item.traffic == 'moderate'" class="text-center"><span class="label label-warning">Moderate</span></td>
+                                              <td *ngIf="item.traffic == 'high'" class="text-center"><span class="label label-danger">High</span></td>
+                                              <td *ngIf="item.traffic == 'low'" class="text-center"><span class="label label-primary">Low</span></td>
+                                          </tr>
+                                      </tbody>
+                                  </table>
+                                  <form class="pagination-wrapper">
+
+
+
+                                      <div class="form-group pages">
+                                        <pagination-controls class="my-pagination" id="pager" (pageChange)="pageChanged($event)" maxSize="9" directionLinks="true"
+                                          autoHide="true" previousLabel="Prev" nextLabel="Next" screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
+                                          screenReaderCurrentLabel="You're on page">
+                                        </pagination-controls>
+                                      </div>
+                                      <div class="form-group options pages">
+                                        <div class="input-group input-group-sm">
+                                          <select class="form-control" name="pageChangedName" [(ngModel)]="pageSize" (ngModelChange)="loadData()">
+                                            <option>1</option>
+                                            <option>5</option>
+                                            <option>10</option>
+                                            <option>20</option>
+                                            <option>50</option>
+                                            <option>100</option>
+                                            <option>200</option>
+                                          </select>
+                                          <span class="input-group-addon addon-right">Per Page</span>
+                                        </div>
+                                      </div>
+                                    </form>
+                              </div>
+                              <div class="col-lg-6">
+                                  <div id="world-map" style="height: 300px;"></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+
+
+  </div>
+</div>
