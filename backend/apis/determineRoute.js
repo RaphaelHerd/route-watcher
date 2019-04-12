@@ -6,11 +6,9 @@ const AWS = require('aws-sdk');
 const util = require('util')
 
 const TABLE_NAME = process.env.DYNAMODB_TABLE || "route-service-dev";
-const debug = process.env.FIREBASE_ENABLE_DEBUG || "true";
+const debug = process.env.ENABLE_DEBUG || "true";
 const API_KEY = process.env.GOOGLE_API_KEY;
 const urlPattern = process.env.MAPS_URL || "https://maps.googleapis.com/maps/api/distancematrix/json?destinations=%s&origins=%s&departure_time=now&key=%s";
-//var homeAddress="Weseler+Str.+81,+46499+Hamminkeln";
-//var workAddress="Bayer+Business+Services+GmbH,+Geb%C3%A4ude+B151,+D%C3%BCsseldorfer+Stra%C3%9Fe,+Cologne"
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 writeTrace("Entrer create method");

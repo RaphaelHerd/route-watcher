@@ -1,0 +1,1 @@
+aws ssm put-parameter --name GOOGLE_API_KEY --type String --value <get from google account> --region us-east-1

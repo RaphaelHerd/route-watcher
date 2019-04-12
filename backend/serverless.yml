@@ -8,9 +8,13 @@ plugins:
 provider:
   name: aws
   runtime: nodejs8.10
+  stage: live
+  apiKeys:
+    - ${self:provider.stage}-route-watcher-api-key
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
-    GOOGLE_API_KEY: AIzaSyAlXU6BsPwg4daPAwzvjE6OKw8yZz94JNw
+    GOOGLE_API_KEY: ${ssm:GOOGLE_API_KEY}
+    ENABLE_DEBUG: "true"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -33,7 +37,7 @@ functions:
             routeSource: "Weseler+Str.+81,+46499+Hamminkeln"
             outeDestination: "Bayer+Business+Services+GmbH,+Geb%C3%A4ude+B151,+D%C3%BCsseldorfer+Stra%C3%9Fe,+Cologne"
             stageParams:
-              stage: dev
+              stage: live
       - schedule:
           rate: rate(30 minutes)
           enabled: true
@@ -41,7 +45,7 @@ functions:
             routeDestination: "Weseler+Str.+81,+46499+Hamminkeln"
             routeSource: "Bayer+Business+Services+GmbH,+Geb%C3%A4ude+B151,+D%C3%BCsseldorfer+Stra%C3%9Fe,+Cologne"
             stageParams:
-              stage: dev
+              stage: live
 
   list:
     handler: apis/list.listRoutes
@@ -49,8 +53,9 @@ functions:
       - http:
           path: route-info
           method: get
-          cors: true
-
+          cors: true 
+          private: true
+          
 custom:
   customDomain:
     domainName: "route-api.digital-cloud-test.de"

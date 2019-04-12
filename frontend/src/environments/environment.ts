@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  restEndpoint: "https://angular-http-guide.firebaseio.com/courses.json"
+  restEndpoint: "https://route-api.digital-cloud-test.de/route-info",
+  apiKey: "qYAoKtsbW13zS53tPjcmh1QWycTG9fok6csoncGI"
 };
 
 /*
