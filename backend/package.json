@@ -1,0 +1,14 @@
+{
+  "name": "route-service",
+  "version": "1.0.0",
+  "description": "Serverless CRUD service exposing a REST HTTP interface for routeing information",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.396.0",
+    "uuid": "^2.0.3"
+  },
+  "devDependencies": {
+    "serverless-domain-manager": "^2.6.13"
+  }
+}

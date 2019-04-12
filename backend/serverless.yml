@@ -1,0 +1,80 @@
+service: route-service
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+plugins:
+  - serverless-domain-manager
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    GOOGLE_API_KEY: AIzaSyAlXU6BsPwg4daPAwzvjE6OKw8yZz94JNw
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  determine-route:
+    handler: apis/determineRoute.determineRoute
+    events:
+      - schedule:
+          rate: rate(30 minutes)
+          enabled: true
+          input:
+            routeSource: "Weseler+Str.+81,+46499+Hamminkeln"
+            outeDestination: "Bayer+Business+Services+GmbH,+Geb%C3%A4ude+B151,+D%C3%BCsseldorfer+Stra%C3%9Fe,+Cologne"
+            stageParams:
+              stage: dev
+      - schedule:
+          rate: rate(30 minutes)
+          enabled: true
+          input:
+            routeDestination: "Weseler+Str.+81,+46499+Hamminkeln"
+            routeSource: "Bayer+Business+Services+GmbH,+Geb%C3%A4ude+B151,+D%C3%BCsseldorfer+Stra%C3%9Fe,+Cologne"
+            stageParams:
+              stage: dev
+
+  list:
+    handler: apis/list.listRoutes
+    events:
+      - http:
+          path: route-info
+          method: get
+          cors: true
+
+custom:
+  customDomain:
+    domainName: "route-api.digital-cloud-test.de"
+    certificateName: "*.digital-cloud-test.de"
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+    endpointType: 'regional'
+
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+           ReadCapacityUnits: 1
+           WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
