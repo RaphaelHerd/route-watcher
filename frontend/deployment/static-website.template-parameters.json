@@ -1,0 +1,12 @@
+[
+    {
+        "ParameterKey": "DomainName",
+        "ParameterValue": "digital-cloud-test.de"
+    },{
+        "ParameterKey": "FullDomainName",
+        "ParameterValue": "site.digital-cloud-test.de"
+    },  {
+        "ParameterKey": "AcmCertificateArn",
+        "ParameterValue": "arn:aws:acm:us-east-1:581077101053:certificate/534d50c2-abed-4de0-8943-569415381b6f"
+    }
+]
